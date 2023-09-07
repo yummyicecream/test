@@ -31,21 +31,18 @@ const signup = async (req, res) => {
     const newUser = req.body;
     const { name, password, email } = newUser;
 
-    // email, name, password가 다 입력되지 않은 경우
     if (email === undefined || password === undefined || name === undefined) {
       const error = new Error("KEY_ERROR");
       error.statusCode = 400;
       throw error;
     }
 
-    // 비밀번호가 너무 짧을 때
     if (password.length < 8) {
       const error = new Error("INVALID_PASSWORD");
       error.statusCode = 400;
       throw error;
     }
 
-    // 비밀번호에 특수문자 없을 때
     const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
     if (!regExp.test(password)) {
       const error = new Error("WRONG_TYPE_OF_PASSWORD");
@@ -53,7 +50,6 @@ const signup = async (req, res) => {
       throw error;
     }
 
-    // 이메일이 중복되어 이미 가입한 경우
     const emailCheck = await myDataSource.query(
       `SELECT email FROM users WHERE email ='${email}'`
     );
@@ -82,22 +78,16 @@ const signup = async (req, res) => {
   });
 };
 
-// 로그인
-
 const login = async (req, res) => {
   try {
     const loginUser = req.body;
     const { email, password } = loginUser;
-
-    // email, password KEY_ERROR 확인
 
     if (email === undefined || password === undefined) {
       const error = new Error("KEY_ERROR");
       error.statusCode = 400;
       throw error;
     }
-
-    // Email 가진 사람 있는지 확인
 
     const emailDb = await myDataSource.query(
       `SELECT * FROM users WHERE email = '${email}'`
@@ -108,15 +98,11 @@ const login = async (req, res) => {
       throw error;
     }
 
-    // Password 비교
-
     if (emailDb[0].password !== password) {
       const error = new Error("WRONG_PASSWORD");
       error.statusCode = 400;
       throw error;
     }
-
-    // generate token
 
     const payload = { id: 10 };
     const secret = "scret_key";
