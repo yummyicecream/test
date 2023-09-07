@@ -138,7 +138,7 @@ const server = http.createServer(app);
 
 const start = async () => {
   try {
-    server.listen(8001, () => console.log(`Server is listening on 8001`));
+    server.listen(8002, () => console.log(`Server is listening on 8002`));
   } catch (err) {
     console.error(err);
   }
